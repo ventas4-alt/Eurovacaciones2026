@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<title>Eurovacaciones</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+
+#page-login { min-height:100vh; background:linear-gradient(135deg,#E8197A 0%,#c8106a 50%,#2EC4D6 100%); display:flex; align-items:center; justify-content:center; padding:20px; }
+.login-card { background:white; border-radius:20px; padding:40px 36px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+.login-logo { text-align:center; margin-bottom:28px; }
+.login-logo h1 { font-size:22px; font-weight:800; }
+.login-logo h1 span { color:#2EC4D6; }
+.login-logo p { font-size:12px; color:#999; margin-top:4px; }
+.login-subtitle { text-align:center; font-size:14px; color:#666; margin-bottom:24px; line-height:1.5; }
+.field { margin-bottom:16px; }
+.field label { display:block; font-size:12px; font-weight:600; color:#555; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; }
+.field input { width:100%; border:1.5px solid #e0e0e0; border-radius:10px; padding:12px 14px; font-size:14px; font-family:inherit; transition:border 0.2s; }
+.field input:focus { outline:none; border-color:#E8197A; }
+.btn-login { width:100%; background:linear-gradient(135deg,#E8197A,#c8106a); color:white; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; margin-top:4px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-login:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(232,25,122,0.4); }
+.switch-link { text-align:center; margin-top:16px; font-size:13px; color:#999; }
+.switch-link a { color:#2EC4D6; font-weight:600; cursor:pointer; }
+.login-help { text-align:center; margin-top:12px; font-size:12px; color:#999; }
+.login-help a { color:#E8197A; font-weight:600; text-decoration:none; }
+
+#page-admin-login { display:none; }
+#page-quote { display:none; background:#f5f5f5; }
+#page-admin { display:none; background:#f5f5f5; min-height:100vh; }
+
+.header { background:linear-gradient(135deg,#E8197A 0%,#c8106a 100%); color:white; padding:28px 32px 24px; position:relative; overflow:hidden; }
+.header::after { content:''; position:absolute; right:-40px; top:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.1); }
+.header::before { content:''; position:absolute; right:60px; bottom:-60px; width:150px; height:150px; border-radius:50%; background:rgba(46,196,214,0.15); }
+.agency-logo { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.agency-name { font-size:24px; font-weight:800; letter-spacing:1px; color:white; }
+.agency-name span { color:#2EC4D6; }
+.agency-sub { font-size:12px; color:rgba(255,255,255,0.75); margin-top:3px; }
+.passenger-badge { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:5px 14px; font-size:13px; display:inline-flex; align-items:center; gap:6px; margin-bottom:14px; }
+.quote-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.meta-item { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; }
+.meta-label { font-size:11px; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.5px; }
+.meta-value { font-size:15px; font-weight:600; margin-top:2px; color:#2EC4D6; }
+
+.content { padding:20px; max-width:900px; margin:0 auto; }
+.section { background:white; border-radius:14px; margin-bottom:10px; border:1px solid #e8e8e8; overflow:hidden; transition:box-shadow 0.2s; }
+.section:hover { box-shadow:0 2px 12px rgba(232,25,122,0.08); }
+.section.open { box-shadow:0 4px 20px rgba(46,196,214,0.12); border-color:#2EC4D6; }
+.section-header { display:flex; align-items:center; padding:16px 20px; cursor:pointer; user-select:none; gap:14px; background:white; transition:background 0.15s; }
+.section-header:hover { background:#f9fefe; }
+.section.open .section-header { background:#f0fafa; border-bottom:1px solid #e0f7f9; }
+.sec-icon { width:38px; height:38px; background:#e0f7f9; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sec-icon i { font-size:18px; color:#2EC4D6; }
+.sec-icon.pink { background:#fde8f2; } .sec-icon.pink i { color:#E8197A; }
+.sec-icon.green { background:#e6f7ee; } .sec-icon.green i { color:#1a9a5c; }
+.sec-icon.red { background:#fdecea; } .sec-icon.red i { color:#d63c3c; }
+.sec-icon.dark { background:#e8e8e8; } .sec-icon.dark i { color:#1a1a1a; }
+.sec-icon.amber { background:#fff4e0; } .sec-icon.amber i { color:#d4820a; }
+.sec-title-block { flex:1; }
+.sec-title { font-size:15px; font-weight:600; }
+.sec-subtitle { font-size:12px; color:#999; margin-top:2px; }
+.chevron { font-size:18px; color:#bbb; transition:transform 0.3s; }
+.section.open .chevron { transform:rotate(180deg); color:#2EC4D6; }
+.section-body { display:none; padding:20px; animation:fadeIn 0.2s ease; }
+.section.open .section-body { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)} }
+
+.notice { border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:16px; display:flex; gap:10px; align-items:flex-start; }
+.notice.blue { background:#e8f1fd; color:#1a5fbf; border-left:3px solid #1a6fd4; }
+.notice.amber { background:#fff4e0; color:#7a4a00; border-left:3px solid #d4820a; }
+.notice i { font-size:16px; flex-shrink:0; margin-top:1px; }
+
+.day-item { display:flex; gap:16px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px dashed #eee; }
+.day-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.day-badge { flex-shrink:0; width:44px; height:44px; background:#E8197A; color:white; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:10px; font-weight:700; line-height:1.2; }
+.day-badge span { font-size:16px; font-weight:800; }
+.day-content h4 { font-size:14px; font-weight:600; margin-bottom:4px; }
+.day-content p { font-size:13px; color:#666; line-height:1.6; }
+
+.flight-card { background:#f8f8f8; border-radius:10px; padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.flight-route { display:flex; align-items:center; gap:10px; flex:1; }
+.flight-city { text-align:center; }
+.flight-city strong { display:block; font-size:20px; font-weight:700; color:#E8197A; }
+.flight-city span { font-size:11px; color:#999; }
+.flight-arrow { color:#2EC4D6; font-size:22px; }
+.flight-info { font-size:12px; color:#999; }
+.flight-info strong { color:#1a1a1a; font-size:13px; display:block; }
+
+.hotel-card { border:1px solid #e8e8e8; border-radius:10px; overflow:hidden; margin-bottom:10px; }
+.hotel-header { background:#E8197A; color:white; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; }
+.hotel-header h4 { font-size:14px; font-weight:600; }
+.hotel-badge { background:rgba(255,255,255,0.2); font-size:11px; padding:2px 8px; border-radius:20px; }
+.hotel-body { padding:12px 16px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; font-size:13px; }
+.hotel-detail { color:#999; }
+.hotel-detail strong { display:block; color:#1a1a1a; font-size:14px; }
+
+.check-list { list-style:none; }
+.check-list li { display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-bottom:1px solid #f5f5f5; font-size:14px; }
+.check-list li:last-child { border-bottom:none; }
+.check-list li i.ok { color:#1a9a5c; font-size:18px; flex-shrink:0; }
+.check-list li i.no { color:#d63c3c; font-size:18px; flex-shrink:0; }
+
+.exc-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.exc-card { border:1px solid #e8e8e8; border-radius:10px; padding:14px; background:#fafafa; }
+.exc-card h4 { font-size:14px; font-weight:600; margin-bottom:4px; }
+.exc-card p { font-size:12px; color:#999; margin-bottom:8px; }
+.exc-price { background:#fde8f2; color:#E8197A; font-size:13px; font-weight:700; padding:4px 10px; border-radius:20px; display:inline-block; }
+
+.price-table { width:100%; border-collapse:collapse; font-size:14px; }
+.price-table th { background:#E8197A; color:white; padding:10px 14px; text-align:left; }
+.price-table td { padding:10px 14px; border-bottom:1px solid #f0f0f0; }
+.price-table tr:nth-child(even) td { background:#f8f8f8; }
+.price-total td { background:#f0fafa !important; font-weight:700; font-size:15px; color:#E8197A; }
+.price-old { text-decoration:line-through; color:#999; font-size:12px; display:block; }
+.price-new { color:#E8197A; font-weight:700; font-size:15px; }
+
+.note-item { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid #f5f5f5; font-size:14px; align-items:flex-start; }
+.note-item:last-child { border-bottom:none; }
+.note-item i { color:#E8197A; font-size:18px; flex-shrink:0; margin-top:1px; }
+
+.confirm-section { background:white; border-radius:14px; border:2px solid #2EC4D6; padding:24px; margin:16px 0; text-align:center; }
+.confirm-section h3 { font-size:18px; font-weight:700; margin-bottom:8px; }
+.confirm-section p { font-size:14px; color:#666; margin-bottom:20px; }
+.confirm-options { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.confirm-opt { border:2px solid #e8e8e8; border-radius:12px; padding:16px; cursor:pointer; transition:all 0.2s; text-align:center; }
+.confirm-opt:hover { border-color:#2EC4D6; background:#f0fafa; }
+.confirm-opt.selected { border-color:#E8197A; background:#fde8f2; }
+.confirm-opt i { font-size:28px; color:#2EC4D6; display:block; margin-bottom:8px; }
+.confirm-opt.selected i { color:#E8197A; }
+.confirm-opt h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+.confirm-opt p { font-size:12px; color:#999; margin:0; }
+.btn-confirm { background:linear-gradient(135deg,#E8197A,#c8106a); color:white; border:none; border-radius:12px; padding:14px 32px; font-size:15px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s; }
+.btn-confirm:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(232,25,122,0.3); }
+
+.summary-bar { background:linear-gradient(135deg,#E8197A,#c8106a); color:white; border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px; }
+.price-big { font-size:28px; font-weight:800; }
+.price-label { font-size:12px; color:rgba(255,255,255,0.75); }
+.validity { text-align:center; font-size:13px; color:#666; margin-top:14px; padding-bottom:20px; line-height:2; }
+.validity a { color:#E8197A; font-weight:600; text-decoration:none; }
+
+.admin-header { background:#1a1a1a; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+.admin-header h2 { color:white; font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.admin-header h2 span { color:#2EC4D6; }
+.btn-logout { background:#333; color:#999; border:none; border-radius:8px; padding:8px 14px; font-size:12px; cursor:pointer; }
+.admin-wrap { max-width:700px; margin:0 auto; padding:20px; }
+.admin-card { background:white; border-radius:14px; border:1px solid #e8e8e8; margin-bottom:14px; overflow:hidden; }
+.admin-card-header { background:#E8197A; color:white; padding:12px 18px; font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.admin-body { padding:16px 18px; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.f { display:flex; flex-direction:column; gap:5px; }
+.f.full { grid-column:1/-1; }
+.f label { font-size:11px; font-weight:600; color:#666; text-transform:uppercase; letter-spacing:0.4px; }
+.f input,.f textarea,.f select { border:1.5px solid #e0e0e0; border-radius:8px; padding:9px 12px; font-size:13px; font-family:inherit; transition:border 0.2s; background:#fafafa; }
+.f input:focus,.f textarea:focus,.f select:focus { outline:none; border-color:#2EC4D6; background:white; }
+.f textarea { resize:vertical; min-height:60px; }
+.dynamic-list { padding:0 18px 16px; }
+.dyn-row { background:#f8f8f8; border-radius:8px; padding:10px 12px; margin-bottom:8px; display:grid; gap:8px; align-items:end; }
+.dyn-row.flight-dyn { grid-template-columns:1fr 1fr 1fr; }
+.dyn-row.hotel-dyn { grid-template-columns:2fr 1fr 1fr; }
+.dyn-row.price-dyn { grid-template-columns:2fr 1fr 1fr; }
+.dyn-row.inc-dyn { grid-template-columns:1fr; }
+.dyn-footer { display:flex; justify-content:space-between; align-items:center; grid-column:1/-1; }
+.btn-rm { background:#fdecea; color:#d63c3c; border:none; border-radius:6px; padding:4px 8px; font-size:11px; cursor:pointer; }
+.btn-add-row { background:#e0f7f9; color:#2EC4D6; border:none; border-radius:8px; padding:8px 14px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px; margin-top:4px; }
+.total-preview { background:#f0fafa; border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; margin:12px 18px; font-size:15px; font-weight:700; color:#E8197A; border:1px solid #c8f0f5; }
+.btn-generate { width:100%; background:linear-gradient(135deg,#E8197A,#c8106a); color:white; border:none; border-radius:12px; padding:16px; font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px; transition:all 0.2s; }
+.btn-generate:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(232,25,122,0.3); }
+.link-result { background:#1a1a1a; border-radius:12px; padding:20px; margin-top:14px; display:none; }
+.link-result h4 { color:#2EC4D6; font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.link-box { background:#333; border-radius:8px; padding:12px; display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.link-box span { color:#eee; font-size:12px; flex:1; word-break:break-all; font-family:monospace; }
+.btn-copy { background:#E8197A; color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; cursor:pointer; flex-shrink:0; }
+.link-actions { display:flex; gap:8px; }
+.btn-preview-link { background:#2EC4D6; color:white; border:none; border-radius:8px; padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer; flex:1; display:flex; align-items:center; justify-content:center; gap:6px; }
+.payment-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.pay-card { border:1px solid #e8e8e8; border-radius:10px; padding:14px; text-align:center; }
+.pay-card h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+.pay-card p { font-size:12px; color:#999; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PASAJERO -->
+<div id="page-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div style="width:100px;height:100px;margin:0 auto 12px;">
+        <img src="logo.png" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'" />
+      </div>
+      <h1><span>EURO</span>VACACIONES</h1>
+      <p>De 🇦🇷 Argentina a Europa con Especialistas</p>
+    </div>
+    <p class="login-subtitle">Gracias por tu consulta, aquí podrás ver la cotización solicitada ✈️☺️</p>
+    <div class="field"><label><i class="ti ti-user"></i> Tu nombre</label><input id="inp-last" placeholder="Ej: Juan" onkeydown="if(event.key==='Enter') loginPassenger()" /></div>
+    <button class="btn-login" onclick="loginPassenger()"><i class="ti ti-search"></i> Ver mi cotización</button>
+    <div class="switch-link">¿Sos del equipo? <a onclick="showAdminLogin()">Ingresar como asesor</a></div>
+    <div class="login-help">🌐 <a href="https://eurovacaciones.tur.ar/" target="_blank">eurovacaciones.tur.ar</a></div>
+    <div class="login-help">¿Necesitás ayuda? <a href="https://w.app/hwvfdq">💬 WhatsApp</a> · <a href="tel:08102203876">📞 0810-220-3876</a></div>
+    <div class="login-help"><a href="https://www.argentina.gob.ar/jefatura/turismo" target="_blank">🏛️ Chequeá Nuestra Agencia en el Ministerio de Turismo</a> · Legajo Nro. <strong>15126</strong></div>
+    <div class="login-help" id="login-contact-extra" style="margin-top:6px;"></div>
+  </div>
+</div>
+
+<!-- LOGIN ASESOR -->
+<div id="page-admin-login">
+  <div class="login-card" style="margin:40px auto;">
+    <div class="login-logo">
+      <div class="login-logo-circle" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#333);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <i class="ti ti-shield-lock" style="font-size:34px;color:white;"></i>
+      </div>
+      <h1>Panel <span>Asesor</span></h1>
+      <p>Eurovacaciones · Acceso interno</p>
+    </div>
+    <div class="field"><label>Usuario</label><input id="adm-user" placeholder="asesor" /></div>
+    <div class="field"><label>Contraseña</label><input id="adm-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') loginAdmin()" /></div>
+    <button class="btn-login" onclick="loginAdmin()" style="background:linear-gradient(135deg,#1a1a1a,#333)"><i class="ti ti-login"></i> Ingresar al panel</button>
+    <div class="switch-link"><a onclick="showPassengerLogin()">← Volver al portal del pasajero</a></div>
+  </div>
+</div>
+
+<!-- PANEL ASESOR -->
+<div id="page-admin">
+  <div class="admin-header">
+    <h2><i class="ti ti-layout-dashboard"></i> Panel <span>Asesor</span> · Eurovacaciones</h2>
+    <button class="btn-logout" onclick="showPassengerLogin()"><i class="ti ti-logout"></i> Salir</button>
+  </div>
+  <div class="admin-wrap">
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-user"></i> Datos del pasajero y viaje</div>
+      <div class="admin-body">
+        <div class="form-grid">
+          <div class="f full"><label>Seleccionar asesor</label>
+            <select id="asesor-select" onchange="fillAsesor()">
+              <option value="">-- Elegir asesor --</option>
+              <option value="Lourdes Martin|ventas2@eurovacacioneslatam.com|110">Lourdes Martin</option>
+              <option value="Romina Lopez|ventas3@eurovacaciones.com.ar|102">Romina Lopez</option>
+              <option value="Romina Seisdedos|ventas@eurovacaciones.com.ar|">Romina Seisdedos</option>
+              <option value="Agustina Acosta|ventas4@eurovacaciones.com.ar|105">Agustina Acosta</option>
+              <option value="Camila Rodriguez|ventas4@eurovacacioneslatam.com|110">Camila Rodriguez</option>
+              <option value="custom">Otro (completar manualmente)</option>
+            </select>
+          </div>
+          <div class="f"><label>Nombre completo</label><input id="a-name" placeholder="Ej: Juan García" /></div>
+          <div class="f"><label>Apellido (para login)</label><input id="a-last" placeholder="Ej: García" /></div>
+          <div class="f"><label>Destino</label><input id="a-dest" placeholder="Ej: Europa 5 países" /></div>
+          <div class="f"><label>Pasajeros</label><input id="a-pax" placeholder="Ej: 2 adultos" /></div>
+          <div class="f"><label>Fecha salida</label><input id="a-from" placeholder="Ej: 10 Jun" /></div>
+          <div class="f"><label>Fecha regreso</label><input id="a-to" placeholder="Ej: 24 Jun" /></div>
+          <div class="f"><label>Noches / Días</label><input id="a-nights" placeholder="Ej: 14 noches · 15 días" /></div>
+          <div class="f"><label>Válida hasta</label><input id="a-valid" placeholder="Ej: 20 de mayo de 2026" /></div>
+          <div class="f full"><label>Código de cotización</label><input id="a-code" placeholder="Ej: EV-EUR-2026-001" /></div>
+          <div class="f"><label>Email del asesor</label><input id="a-email" placeholder="Ej: ventas@eurovacaciones.com" /></div>
+          <div class="f"><label>Número interno / asesor</label><input id="a-interno" placeholder="Ej: Interno 203 · Asesor: María" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-calendar-event"></i> Itinerario día a día</div>
+      <div class="admin-body" style="padding-bottom:0;">
+        <div class="f full" style="margin-bottom:12px;">
+          <label>📋 Pegá el itinerario completo</label>
+          <textarea id="itinerary-raw" placeholder="Día 1 - Llegada a Madrid&#10;Recepción en el aeropuerto.&#10;&#10;Día 2 - Madrid City Tour&#10;Visita al Prado y Plaza Mayor." style="min-height:120px;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;width:100%;resize:vertical;margin-top:4px;"></textarea>
+        </div>
+        <button class="btn-add-row" onclick="parseItinerary()" style="margin-bottom:14px;background:#E8197A;color:white;"><i class="ti ti-wand"></i> Dividir automáticamente</button>
+      </div>
+      <div class="dynamic-list" id="days-list"></div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynDay()"><i class="ti ti-plus"></i> Agregar día manualmente</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-plane"></i> Vuelos</div>
+      <div class="dynamic-list" id="flights-list">
+        <div class="dyn-row flight-dyn">
+          <div class="f"><label>Origen</label><input class="fl-from" placeholder="EZE" /></div>
+          <div class="f"><label>Destino</label><input class="fl-to" placeholder="MAD" /></div>
+          <div class="f"><label>Aerolínea</label><input class="fl-air" placeholder="Iberia IB6845" /></div>
+          <div class="f"><label>Ciudad origen</label><input class="fl-fc" placeholder="Buenos Aires" /></div>
+          <div class="f"><label>Ciudad destino</label><input class="fl-tc" placeholder="Madrid" /></div>
+          <div class="f"><label>Horario</label><input class="fl-inf" placeholder="10 Jun · 23:50 → 14:30" /></div>
+          <div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div>
+        </div>
+      </div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynFlight()"><i class="ti ti-plus"></i> Agregar vuelo</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-building"></i> Hoteles</div>
+      <div class="admin-body" style="padding-bottom:0;">
+        <div class="f full" style="margin-bottom:12px;">
+          <label>📋 Pegá el listado de hoteles</label>
+          <textarea id="hotels-raw" placeholder="Madrid - Hotel Gran Meliá - 2 noches&#10;París - Hotel Le Marais - 2 noches" style="min-height:80px;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;width:100%;resize:vertical;margin-top:4px;"></textarea>
+        </div>
+        <button class="btn-add-row" onclick="parseHotels()" style="margin-bottom:14px;background:#E8197A;color:white;"><i class="ti ti-wand"></i> Dividir automáticamente</button>
+      </div>
+      <div class="dynamic-list" id="hotels-list"></div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynHotel()"><i class="ti ti-plus"></i> Agregar hotel manualmente</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header" style="background:#1a9a5c;"><i class="ti ti-circle-check"></i> ¿Qué incluye?</div>
+      <div class="dynamic-list" id="inc-list">
+        <div class="dyn-row inc-dyn"><div class="f"><input class="inc-i" placeholder="Ej: Vuelos con equipaje" /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+      </div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynInc('inc-list','inc-i','Servicio incluido...')"><i class="ti ti-plus"></i> Agregar</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header" style="background:#d63c3c;"><i class="ti ti-circle-x"></i> ¿Qué no incluye?</div>
+      <div class="dynamic-list" id="excl-list">
+        <div class="dyn-row inc-dyn"><div class="f"><input class="excl-i" placeholder="Ej: Almuerzos y cenas" /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+      </div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynInc('excl-list','excl-i','Servicio no incluido...')"><i class="ti ti-plus"></i> Agregar</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-ticket"></i> Excursiones opcionales</div>
+      <div class="admin-body" style="padding-bottom:0;">
+        <div class="f full" style="margin-bottom:12px;">
+          <label>📋 Pegá las excursiones</label>
+          <textarea id="excursions-raw" placeholder="Versalles - USD 85 - Tour privado&#10;Crucero Sena - USD 110 - Recorrido nocturno" style="min-height:80px;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;width:100%;resize:vertical;margin-top:4px;"></textarea>
+        </div>
+        <button class="btn-add-row" onclick="parseExcursions()" style="margin-bottom:14px;background:#E8197A;color:white;"><i class="ti ti-wand"></i> Dividir automáticamente</button>
+      </div>
+      <div class="dynamic-list" id="excopt-list"></div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynExc()"><i class="ti ti-plus"></i> Agregar manualmente</button></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-cash"></i> Precios (USD por persona)</div>
+      <div class="dynamic-list" id="prices-list">
+        <div class="dyn-row price-dyn">
+          <div class="f"><label>Vuelos</label><input class="pr-ds" value="Vuelos internacionales" /></div>
+          <div class="f"><label>Precio regular USD</label><input class="pr-old" type="number" placeholder="0" /></div>
+          <div class="f"><label>Precio promo USD</label><input class="pr-vl" type="number" placeholder="0" oninput="updTotal()" /></div>
+          <div class="dyn-footer"><span style="font-size:11px;color:#999;">También pueden contratarse por cuenta propia</span><button class="btn-rm" onclick="this.closest('.dyn-row').remove();updTotal()"><i class="ti ti-trash"></i></button></div>
+        </div>
+        <div class="dyn-row price-dyn">
+          <div class="f"><label>Servicios terrestres</label><input class="pr-ds" value="Servicios terrestres (tour)" /></div>
+          <div class="f"><label>Precio regular USD</label><input class="pr-old" type="number" placeholder="0" /></div>
+          <div class="f"><label>Precio promo USD</label><input class="pr-vl" type="number" placeholder="0" oninput="updTotal()" /></div>
+          <div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove();updTotal()"><i class="ti ti-trash"></i></button></div>
+        </div>
+      </div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynPrice()"><i class="ti ti-plus"></i> Agregar ítem</button></div>
+      <div class="total-preview"><span>Total por persona:</span><span id="adm-total">USD 0</span></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-credit-card"></i> Formas de pago</div>
+      <div class="admin-body">
+        <div class="form-grid">
+          <div class="f full"><label>Plan 1 - Título</label><input id="pay1-title" value="Plan Cuotas Flexibles" /></div>
+          <div class="f full"><label>Plan 1 - Descripción</label><textarea id="pay1-desc">Reservá tu lugar con solo el 10% y aboná el saldo en cuotas mensuales personalizadas junto a tu asesor.</textarea></div>
+          <div class="f full"><label>Plan 2 - Título</label><input id="pay2-title" value="Plan a Tu Medida" /></div>
+          <div class="f full"><label>Plan 2 - Descripción</label><textarea id="pay2-desc">Confirmá con el 30% y pagá el resto a tu ritmo hasta 30 días antes de tu viaje.</textarea></div>
+          <div class="f full"><label>Vuelos - Descripción</label><input id="pay3-desc" value="Pago total al momento de la emisión." /></div>
+          <div class="f full"><label>Nota de medios de pago</label><textarea id="pay-note">🏦 Medios de pago disponibles:
+• Transferencia bancaria (recomendado para evitar percepciones extras).
+• Tarjeta de crédito.
+• Efectivo o depósito (estas opciones tienen un 5% de percepción de AFIP).</textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><i class="ti ti-alert-circle"></i> Notas importantes</div>
+      <div class="dynamic-list" id="notes-list">
+        <div class="dyn-row inc-dyn"><div class="f"><input class="nt-i" value="Sujetos a disponibilidad y pueden variar hasta el momento de la emisión de los boletos aéreos." /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+        <div class="dyn-row inc-dyn"><div class="f"><input class="nt-i" value="Pasaporte vigente con mínimo 6 meses de validez desde la fecha de regreso." /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+        <div class="dyn-row inc-dyn"><div class="f"><input class="nt-i" value="Verificar requisitos sanitarios vigentes al momento del viaje para cada país." /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+        <div class="dyn-row inc-dyn"><div class="f"><input class="nt-i" value="Ante cualquier inconveniente, comunicarse al WhatsApp de emergencias 24hs." /></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest('.dyn-row').remove()"><i class="ti ti-trash"></i></button></div></div>
+      </div>
+      <div style="padding:0 18px 16px;"><button class="btn-add-row" onclick="addDynInc('notes-list','nt-i','Agregar nota...')"><i class="ti ti-plus"></i> Agregar nota</button></div>
+    </div>
+
+    <button class="btn-generate" onclick="generateLink()"><i class="ti ti-link"></i> Generar link para el pasajero</button>
+    <div class="link-result" id="link-result">
+      <h4><i class="ti ti-check"></i> ¡Link generado!</h4>
+      <div class="link-box"><span id="link-display"></span><button class="btn-copy" onclick="copyLink()"><i class="ti ti-copy"></i> Copiar</button></div>
+      <div class="link-actions">
+        <button class="btn-preview-link" onclick="previewQuote()"><i class="ti ti-eye"></i> Vista previa</button>
+      </div>
+    </div>
+    <div style="height:24px;"></div>
+  </div>
+</div>
+
+<!-- COTIZACIÓN PASAJERO -->
+<div id="page-quote">
+  <div class="header">
+    <div class="agency-logo">
+      <div>
+        <div class="agency-name"><span>EURO</span>VACACIONES</div>
+        <div class="agency-sub">De 🇦🇷 Argentina a Europa con Especialistas</div>
+      </div>
+    </div>
+    <div class="passenger-badge" id="q-passenger-badge"></div>
+    <div class="quote-meta">
+      <div class="meta-item"><div class="meta-label"><i class="ti ti-map-pin"></i> Destino</div><div class="meta-value" id="q-dest"></div></div>
+      <div class="meta-item"><div class="meta-label"><i class="ti ti-calendar"></i> Fechas</div><div class="meta-value" id="q-dates"></div><div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:3px;">Por otras salidas consultanos</div></div>
+      <div class="meta-item"><div class="meta-label"><i class="ti ti-users"></i> Pasajeros</div><div class="meta-value" id="q-pax"></div></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="section open" id="qs-it"><div class="section-header" onclick="toggleS('qs-it')"><div class="sec-icon"><i class="ti ti-calendar-event"></i></div><div class="sec-title-block"><div class="sec-title">Itinerario día a día</div><div class="sec-subtitle" id="q-nights"></div></div><i class="ti ti-chevron-down chevron"></i></div><div class="section-body" id="q-days"></div></div>
+    <div class="section" id="qs-fl"><div class="section-header" onclick="toggleS('qs-fl')"><div class="sec-icon pink"><i class="ti ti-plane"></i></div><div class="sec-title-block"><div class="sec-title">Vuelos y traslados</div><div class="sec-subtitle">Clase turista · equipaje incluido</div></div><i class="ti ti-chevron-down chevron"></i></div><div class="section-body" id="q-flights"></div></div>
+    <div class="section" id="qs-ht">
+      <div class="section-header" onclick="toggleS('qs-ht')"><div class="sec-icon"><i class="ti ti-building"></i></div><div class="sec-title-block"><div class="sec-title">Hoteles incluidos</div><div class="sec-subtitle">Categoría 4 estrellas · desayuno incluido</div></div><i class="ti ti-chevron-down chevron"></i></div>
+      <div class="section-body">
+        <div class="notice blue"><i class="ti ti-info-circle"></i><span><strong>Hoteles Previstos o similares:</strong> Los hoteles definitivos se confirman 48 hs antes del inicio del tour.</span></div>
+        <div id="q-hotels"></div>
+      </div>
+    </div>
+    <div class="section" id="qs-in"><div class="section-header" onclick="toggleS('qs-in')"><div class="sec-icon green"><i class="ti ti-circle-check"></i></div><div class="sec-title-block"><div class="sec-title">¿Qué incluye?</div><div class="sec-subtitle">Servicios comprendidos</div></div><i class="ti ti-chevron-down chevron"></i></div><div class="section-body"><ul class="check-list" id="q-includes"></ul></div></div>
+    <div class="section" id="qs-ex"><div class="section-header" onclick="toggleS('qs-ex')"><div class="sec-icon red"><i class="ti ti-circle-x"></i></div><div class="sec-title-block"><div class="sec-title">¿Qué no incluye?</div><div class="sec-subtitle">Servicios no comprendidos</div></div><i class="ti ti-chevron-down chevron"></i></div><div class="section-body"><ul class="check-list" id="q-excludes"></ul></div></div>
+    <div class="section" id="qs-exc">
+      <div class="section-header" onclick="toggleS('qs-exc')"><div class="sec-icon amber"><i class="ti ti-ticket"></i></div><div class="sec-title-block"><div class="sec-title">Excursiones opcionales</div><div class="sec-subtitle">No incluidas en la tarifa del tour</div></div><i class="ti ti-chevron-down chevron"></i></div>
+      <div class="section-body">
+        <div class="notice amber"><i class="ti ti-info-circle"></i><div>Este circuito incluye los aspectos básicos para conocer los lugares. A modo complementario le recomendamos estas actividades extras.<br><strong>Nota:</strong> Se abonan con tarjeta o efectivo al guía en destino. Precios aproximados.</div></div>
+        <div class="exc-grid" id="q-excursions"></div>
+      </div>
+    </div>
+    <div class="section" id="qs-pr">
+      <div class="section-header" onclick="toggleS('qs-pr')"><div class="sec-icon dark"><i class="ti ti-cash"></i></div><div class="sec-title-block"><div class="sec-title">Precios y condiciones</div><div class="sec-subtitle">Tarifas en USD · por persona</div></div><i class="ti ti-chevron-down chevron"></i></div>
+      <div class="section-body" id="q-prices"></div>
+    </div>
+    <div class="section" id="qs-pay">
+      <div class="section-header" onclick="toggleS('qs-pay')"><div class="sec-icon"><i class="ti ti-credit-card"></i></div><div class="sec-title-block"><div class="sec-title">Formas de pago</div><div class="sec-subtitle">🏦 Transferencia · Tarjeta · Efectivo</div></div><i class="ti ti-chevron-down chevron"></i></div>
+      <div class="section-body" id="q-payment"></div>
+    </div>
+    <div class="section" id="qs-nt"><div class="section-header" onclick="toggleS('qs-nt')"><div class="sec-icon pink"><i class="ti ti-alert-circle"></i></div><div class="sec-title-block"><div class="sec-title">Notas importantes</div><div class="sec-subtitle">Información a tener en cuenta</div></div><i class="ti ti-chevron-down chevron"></i></div><div class="section-body" id="q-notes"></div></div>
+
+    <div class="confirm-section">
+      <h3>¿Listo para confirmar tu viaje? ✈️</h3>
+      <p>Elegí tu plan de pago y un asesor se pondrá en contacto con vos</p>
+      <div class="confirm-options">
+        <div class="confirm-opt" onclick="selectPlan(this)"><i class="ti ti-currency-dollar"></i><h4 id="conf-plan1">Plan Cuotas Flexibles</h4><p>Reservá con solo el 10%</p></div>
+        <div class="confirm-opt" onclick="selectPlan(this)"><i class="ti ti-calendar-check"></i><h4 id="conf-plan2">Plan a Tu Medida</h4><p>Confirmá con el 30%</p></div>
+      </div>
+      <button class="btn-confirm" onclick="confirmReserv()"><i class="ti ti-brand-whatsapp"></i> Confirmar reserva o realizar consulta</button>
+    </div>
+
+    <div class="summary-bar">
+      <div>
+        <div class="price-label" id="q-summary-label"></div>
+        <div class="price-big" id="q-total"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;" id="q-per-person"></div>
+      </div>
+    </div>
+
+    <div class="validity">
+      <div><i class="ti ti-phone"></i> <a href="tel:08102203876">0810-220-3876</a></div>
+      <div id="q-contact-extra"></div>
+      <div><i class="ti ti-building"></i> <a href="https://www.argentina.gob.ar/jefatura/turismo" target="_blank">Chequeá Nuestra Agencia en el Ministerio de Turismo</a> · Legajo Nro. <strong>15126</strong></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var selectedPlan = null;
+var generatedData = null;
+
+var DEMO = {
+  code:'EV-EUR-2026-001', last:'Garcia',
+  name:'Juan García', dest:'Europa 5 países',
+  pax:'2 adultos', from:'10 Jun', to:'24 Jun',
+  nights:'14 noches · 15 días', valid:'20 de mayo de 2026',
+  email:'', interno:'',
+  pay1title:'Plan Cuotas Flexibles',
+  pay1desc:'Reservá tu lugar con solo el 10% y aboná el saldo en cuotas mensuales.',
+  pay2title:'Plan a Tu Medida',
+  pay2desc:'Confirmá con el 30% y pagá el resto a tu ritmo hasta 30 días antes de tu viaje.',
+  pay3desc:'Pago total al momento de la emisión.',
+  paynote:'🏦 Medios de pago disponibles:\n• Transferencia bancaria (recomendado).\n• Tarjeta de crédito.\n• Efectivo o depósito (5% de percepción de AFIP).',
+  days:[
+    {l:'1',t:'Llegada a Madrid',d:'Recepción en el aeropuerto. Traslado al hotel.'},
+    {l:'2',t:'Madrid City Tour',d:'Visita al Prado, Puerta del Sol y Plaza Mayor.'},
+    {l:'3-4',t:'París, Francia',d:'Torre Eiffel, Versalles y Montmartre.'},
+    {l:'5-7',t:'Roma, Italia',d:'Coliseo, Vaticano y Fontana di Trevi.'}
+  ],
+  flights:[
+    {from:'EZE',to:'MAD',air:'Iberia IB6845',fc:'Buenos Aires',tc:'Madrid',inf:'10 Jun · 23:50 → 14:30 · Directo'}
+  ],
+  hotels:[
+    {nm:'Hotel Gran Meliá Madrid',ct:'Madrid',nt:'2 noches'},
+    {nm:'Hotel Le Marais París',ct:'París',nt:'2 noches'}
+  ],
+  includes:['Vuelos internacionales con equipaje','Hoteles 4 estrellas con desayuno','Traslados aeropuerto-hotel','Guía de habla hispana'],
+  excludes:['Almuerzos y cenas','Gastos personales','Excursiones opcionales'],
+  excursions:[
+    {nm:'Versalles completo',pr:'85',ds:'Tour privado al Palacio y jardines.'},
+    {nm:'Crucero Sena nocturno',pr:'110',ds:'Recorrido nocturno con cena.'}
+  ],
+  prices:[
+    {ds:'Vuelos internacionales',vl:1800,old:2100,vuelo:true},
+    {ds:'Servicios terrestres (tour)',vl:2360,old:2800,vuelo:false}
+  ],
+  notes:[
+    'Sujetos a disponibilidad y pueden variar hasta el momento de la emisión.',
+    'Pasaporte vigente con mínimo 6 meses de validez.',
+    'Ante cualquier inconveniente, comunicarse al WhatsApp 24hs.'
+  ]
+};
+
+var GITHUB_USER = 'ventas4-alt';
+var GITHUB_REPO = 'Eurovacaciones2026';
+var BASE_URL = 'https://' + GITHUB_USER + '.github.io/' + GITHUB_REPO;
+var MAKE_WEBHOOK = 'https://hook.us2.make.com/88sumnfx0feoth7fqyuvq3lhx5pz6hfr';
+
+function showPassengerLogin() {
+  hide('page-admin-login'); hide('page-admin'); hide('page-quote');
+  show('page-login');
+}
+function showAdminLogin() {
+  hide('page-login'); hide('page-quote'); hide('page-admin');
+  show('page-admin-login');
+}
+function loginAdmin() {
+  var u = document.getElementById('adm-user').value;
+  var p = document.getElementById('adm-pass').value;
+  if (u === 'euro' && p === '2026') {
+    hide('page-admin-login'); show('page-admin');
+  } else {
+    alert('Usuario: euro\nContraseña: 2026');
+  }
+}
+function loginPassenger() {
+  var name = document.getElementById('inp-last').value.trim();
+  if (!name) return;
+  var params = new URLSearchParams(window.location.search);
+  var data = DEMO;
+  if (params.has('d')) {
+    try { data = JSON.parse(decodeURIComponent(escape(atob(params.get('d'))))); } catch(e) {}
+  }
+  data.name = name;
+  hide('page-login');
+  renderQuote(data);
+}
+
+function renderQuote(d) {
+  show('page-quote');
+  document.getElementById('q-passenger-badge').innerHTML = '<i class="ti ti-user"></i> Cotización para: <strong>' + d.name + '</strong>';
+  document.getElementById('q-dest').textContent = d.dest;
+  document.getElementById('q-dates').textContent = d.from + ' – ' + d.to;
+  document.getElementById('q-pax').textContent = d.pax;
+  document.getElementById('q-nights').textContent = d.nights;
+
+  var daysHtml = '';
+  for (var i = 0; i < d.days.length; i++) {
+    var x = d.days[i];
+    daysHtml += '<div class="day-item"><div class="day-badge">DÍA<span>' + x.l + '</span></div><div class="day-content"><h4>' + x.t + '</h4><p>' + x.d + '</p></div></div>';
+  }
+  document.getElementById('q-days').innerHTML = daysHtml;
+
+  var flightsHtml = '';
+  for (var i = 0; i < d.flights.length; i++) {
+    var x = d.flights[i];
+    flightsHtml += '<div class="flight-card"><div class="flight-route"><div class="flight-city"><strong>' + x.from + '</strong><span>' + x.fc + '</span></div><i class="ti ti-arrow-narrow-right flight-arrow"></i><div class="flight-city"><strong>' + x.to + '</strong><span>' + x.tc + '</span></div></div><div class="flight-info"><strong>' + x.air + '</strong>' + x.inf + '</div></div>';
+  }
+  flightsHtml += '<p style="font-size:12px;color:#999;margin-top:8px;"><i class="ti ti-info-circle"></i> Todos los traslados aeropuerto-hotel en servicios privados.</p>';
+  document.getElementById('q-flights').innerHTML = flightsHtml;
+
+  var hotelsHtml = '';
+  for (var i = 0; i < d.hotels.length; i++) {
+    var x = d.hotels[i];
+    hotelsHtml += '<div class="hotel-card"><div class="hotel-header"><h4><i class="ti ti-building"></i> ' + x.nm + '</h4><span class="hotel-badge">★★★★</span></div><div class="hotel-body"><div class="hotel-detail"><strong>' + x.ct + '</strong>Ciudad</div><div class="hotel-detail"><strong>' + x.nt + '</strong>Estadía</div><div class="hotel-detail"><strong>Desayuno</strong>Régimen</div></div></div>';
+  }
+  document.getElementById('q-hotels').innerHTML = hotelsHtml;
+
+  var incHtml = '';
+  for (var i = 0; i < d.includes.length; i++) {
+    incHtml += '<li><i class="ti ti-circle-check ok"></i> ' + d.includes[i] + '</li>';
+  }
+  document.getElementById('q-includes').innerHTML = incHtml;
+
+  var exclHtml = '';
+  for (var i = 0; i < d.excludes.length; i++) {
+    exclHtml += '<li><i class="ti ti-circle-x no"></i> ' + d.excludes[i] + '</li>';
+  }
+  document.getElementById('q-excludes').innerHTML = exclHtml;
+
+  var excHtml = '';
+  for (var i = 0; i < d.excursions.length; i++) {
+    var x = d.excursions[i];
+    excHtml += '<div class="exc-card"><h4>' + x.nm + '</h4><p>' + x.ds + '</p><span class="exc-price">USD ' + x.pr + ' / persona</span></div>';
+  }
+  document.getElementById('q-excursions').innerHTML = excHtml;
+
+  var total = 0;
+  var pricesHtml = '<table class="price-table"><thead><tr><th>Descripción</th><th>Por persona (USD)</th></tr></thead><tbody>';
+  for (var i = 0; i < d.prices.length; i++) {
+    var p = d.prices[i];
+    var vl = parseFloat(p.vl) || 0;
+    total += vl;
+    var oldHtml = (parseFloat(p.old) > 0 && !p.vuelo) ? '<span class="price-old">USD ' + parseFloat(p.old).toLocaleString('es-AR') + '</span>' : '';
+    var extra = p.vuelo ? '<br><small style="color:#999;">También podés contratar los vuelos por tu cuenta</small>' : '';
+    pricesHtml += '<tr><td>' + p.ds + extra + '</td><td>' + oldHtml + '<span class="price-new">USD ' + vl.toLocaleString('es-AR') + '</span></td></tr>';
+  }
+  pricesHtml += '<tr class="price-total"><td><strong>TOTAL por persona</strong></td><td><strong>USD ' + total.toLocaleString('es-AR') + '</strong></td></tr></tbody></table>';
+  pricesHtml += '<p style="font-size:12px;color:#999;margin-top:12px;"><i class="ti ti-info-circle"></i> Sujetos a disponibilidad y pueden variar las tarifas hasta la emisión.</p>';
+  document.getElementById('q-prices').innerHTML = pricesHtml;
+
+  var payHtml = '<p style="font-size:13px;font-weight:600;color:#E8197A;margin-bottom:12px;"><i class="ti ti-briefcase"></i> Tour</p>';
+  payHtml += '<div class="payment-grid" style="margin-bottom:14px;">';
+  payHtml += '<div class="pay-card"><div style="width:28px;height:28px;background:#E8197A;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin:0 auto 8px;">1</div><h4>' + (d.pay1title||'Plan Cuotas Flexibles') + '</h4><p>' + (d.pay1desc||'') + '</p></div>';
+  payHtml += '<div class="pay-card"><div style="width:28px;height:28px;background:#2EC4D6;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin:0 auto 8px;">2</div><h4>' + (d.pay2title||'Plan a Tu Medida') + '</h4><p>' + (d.pay2desc||'') + '</p></div>';
+  payHtml += '<div class="pay-card"><i class="ti ti-plane" style="font-size:24px;color:#2EC4D6;margin-bottom:8px;display:block;"></i><h4>Vuelos</h4><p>' + (d.pay3desc||'') + '</p></div>';
+  payHtml += '</div>';
+  if (d.paynote) {
+    payHtml += '<div style="background:#f0fafa;border-radius:10px;padding:14px;font-size:13px;color:#1a1a1a;border-left:3px solid #2EC4D6;white-space:pre-line;">' + d.paynote + '</div>';
+  }
+  document.getElementById('q-payment').innerHTML = payHtml;
+
+  var notesHtml = '';
+  for (var i = 0; i < d.notes.length; i++) {
+    notesHtml += '<div class="note-item"><i class="ti ti-alert-triangle"></i><span>' + d.notes[i] + '</span></div>';
+  }
+  document.getElementById('q-notes').innerHTML = notesHtml;
+
+  var paxNum = parseInt(d.pax) || 2;
+  var totalAll = total * paxNum;
+  document.getElementById('q-summary-label').textContent = 'USD ' + total.toLocaleString('es-AR') + ' por persona';
+  document.getElementById('q-total').textContent = 'USD ' + totalAll.toLocaleString('es-AR');
+  document.getElementById('q-per-person').textContent = 'Total (' + d.pax + '): USD ' + totalAll.toLocaleString('es-AR');
+
+  var qContact = document.getElementById('q-contact-extra');
+  if (qContact) {
+    var txt = '';
+    if (d.email) txt += '<div><i class="ti ti-mail"></i> <a href="mailto:' + d.email + '" style="color:#E8197A;font-weight:600;text-decoration:none;">' + d.email + '</a></div>';
+    if (d.interno) txt += '<div><i class="ti ti-phone-call"></i> ' + d.interno + '</div>';
+    qContact.innerHTML = txt;
+  }
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('.confirm-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedPlan = el.querySelector('h4').textContent;
+}
+function confirmReserv() { window.open('https://w.app/hwvfdq', '_blank'); }
+function toggleS(id) { document.getElementById(id).classList.toggle('open'); }
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+function fillAsesor() {
+  var sel = document.getElementById('asesor-select').value;
+  if (!sel || sel === 'custom') return;
+  var parts = sel.split('|');
+  var nombre = parts[0];
+  var email = parts[1];
+  var interno = parts[2];
+  document.getElementById('a-email').value = email;
+  document.getElementById('a-interno').value = interno ? 'Interno ' + interno + ' · Asesor: ' + nombre : 'Asesor: ' + nombre;
+}
+
+function updTotal() {
+  var t = 0;
+  document.querySelectorAll('.pr-vl').forEach(function(i) { t += parseFloat(i.value) || 0; });
+  document.getElementById('adm-total').textContent = 'USD ' + t.toLocaleString('es-AR');
+}
+
+function parseItinerary() {
+  var raw = document.getElementById('itinerary-raw').value.trim();
+  if (!raw) return;
+  document.getElementById('days-list').innerHTML = '';
+  var blocks = raw.split(/(?=\b[Dd][ií][as]+\.?\s*\d)/);
+  for (var i = 0; i < blocks.length; i++) {
+    var block = blocks[i].trim();
+    if (!block) continue;
+    var lblMatch = block.match(/[Dd][ií][as]+\.?\s*([\d]+-?[\d]*)/);
+    var lbl = lblMatch ? lblMatch[1] : '?';
+    var rest = block.replace(/[Dd][ií][as]+\.?\s*[\d]+-?[\d]*\s*[-–—:]?\s*/, '').trim();
+    var lines = rest.split(/\n+/).map(function(l) { return l.trim(); }).filter(Boolean);
+    addDayRow(lbl, lines[0] || '', lines.slice(1).join(' ') || '');
+  }
+}
+
+function parseHotels() {
+  var raw = document.getElementById('hotels-raw').value.trim();
+  if (!raw) return;
+  document.getElementById('hotels-list').innerHTML = '';
+  var lines = raw.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    var parts = line.split(/\s*[-–|]\s*/);
+    if (parts.length >= 2) {
+      var nightsPart = '';
+      var nightsIdx = -1;
+      for (var j = 0; j < parts.length; j++) {
+        if (/noche|night|\d+n/i.test(parts[j])) { nightsPart = parts[j]; nightsIdx = j; break; }
+      }
+      var remaining = parts.filter(function(_, idx) { return idx !== nightsIdx; });
+      remaining.sort(function(a, b) { return a.length - b.length; });
+      addHotelRow((remaining[1] || remaining[0] || '').trim(), (remaining[0] || '').trim(), nightsPart.trim());
+    } else {
+      addHotelRow(line, '', '');
+    }
+  }
+}
+
+function parseExcursions() {
+  var raw = document.getElementById('excursions-raw').value.trim();
+  if (!raw) return;
+  document.getElementById('excopt-list').innerHTML = '';
+  var lines = raw.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    var parts = line.split(/\s*[-–|]\s*/);
+    var name = parts[0] || '';
+    var priceMatch = line.match(/USD?\s*(\d+)/i);
+    var price = priceMatch ? priceMatch[1] : '';
+    var desc = parts.slice(2).join(' ').replace(/USD?\s*\d+/i, '').trim() || parts[1] || '';
+    addExcRow(name.trim(), price, desc.trim());
+  }
+}
+
+function addDayRow(lbl, title, desc) {
+  var c = document.getElementById('days-list');
+  var d = document.createElement('div');
+  d.className = 'dyn-row';
+  d.style.gridTemplateColumns = '1fr';
+  d.innerHTML = '<div class="form-grid"><div class="f"><label>Día(s)</label><input class="d-lbl" value="' + lbl + '" placeholder="1"/></div><div class="f"><label>Título</label><input class="d-ttl" value="' + title + '" placeholder="Llegada a Madrid"/></div><div class="f full"><label>Descripción</label><textarea class="d-dsc" placeholder="Actividades...">' + desc + '</textarea></div></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+function addHotelRow(nm, ct, nt) {
+  var c = document.getElementById('hotels-list');
+  var d = document.createElement('div');
+  d.className = 'dyn-row hotel-dyn';
+  d.innerHTML = '<div class="f"><label>Hotel</label><input class="ht-nm" value="' + nm + '" placeholder="Hotel..."/></div><div class="f"><label>Ciudad</label><input class="ht-ct" value="' + ct + '" placeholder="Ciudad"/></div><div class="f"><label>Noches</label><input class="ht-nt" value="' + nt + '" placeholder="2 noches"/></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+function addExcRow(nm, pr, ds) {
+  var c = document.getElementById('excopt-list');
+  var d = document.createElement('div');
+  d.className = 'dyn-row';
+  d.style.gridTemplateColumns = '2fr 1fr';
+  d.innerHTML = '<div class="f"><label>Nombre</label><input class="eo-nm" value="' + nm + '" placeholder="Excursión..."/></div><div class="f"><label>USD/persona</label><input class="eo-pr" value="' + pr + '" placeholder="85"/></div><div class="f full" style="grid-column:1/-1;"><label>Descripción</label><input class="eo-ds" value="' + ds + '" placeholder="Descripción..."/></div><div class="dyn-footer" style="grid-column:1/-1;"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+function addDynDay() { addDayRow('', '', ''); }
+function addDynHotel() { addHotelRow('', '', ''); }
+function addDynExc() { addExcRow('', '', ''); }
+function addDynFlight() {
+  var c = document.getElementById('flights-list');
+  var d = document.createElement('div');
+  d.className = 'dyn-row flight-dyn';
+  d.innerHTML = '<div class="f"><label>Origen</label><input class="fl-from" placeholder="MAD"/></div><div class="f"><label>Destino</label><input class="fl-to" placeholder="CDG"/></div><div class="f"><label>Aerolínea</label><input class="fl-air" placeholder="Air France"/></div><div class="f"><label>Ciudad origen</label><input class="fl-fc" placeholder="Madrid"/></div><div class="f"><label>Ciudad destino</label><input class="fl-tc" placeholder="París"/></div><div class="f"><label>Horario</label><input class="fl-inf" placeholder="13 Jun · 18:15 → 19:55"/></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+function addDynInc(listId, cls, ph) {
+  var c = document.getElementById(listId);
+  var d = document.createElement('div');
+  d.className = 'dyn-row inc-dyn';
+  d.innerHTML = '<div class="f"><input class="' + cls + '" placeholder="' + ph + '"/></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+function addDynPrice() {
+  var c = document.getElementById('prices-list');
+  var d = document.createElement('div');
+  d.className = 'dyn-row price-dyn';
+  d.innerHTML = '<div class="f"><label>Descripción</label><input class="pr-ds" placeholder="Servicio..."/></div><div class="f"><label>Precio regular USD</label><input class="pr-old" type="number" placeholder="0"/></div><div class="f"><label>Precio promo USD</label><input class="pr-vl" type="number" placeholder="0" oninput="updTotal()"/></div><div class="dyn-footer"><span></span><button class="btn-rm" onclick="this.closest(\'.dyn-row\').remove();updTotal()"><i class="ti ti-trash"></i></button></div>';
+  c.appendChild(d);
+}
+
+function collectData() {
+  var days = [];
+  document.querySelectorAll('#days-list .dyn-row').forEach(function(r) {
+    days.push({l:(r.querySelector('.d-lbl')||{}).value||'', t:(r.querySelector('.d-ttl')||{}).value||'', d:(r.querySelector('.d-dsc')||{}).value||''});
+  });
+  var flights = [];
+  document.querySelectorAll('#flights-list .dyn-row').forEach(function(r) {
+    flights.push({from:(r.querySelector('.fl-from')||{}).value||'', to:(r.querySelector('.fl-to')||{}).value||'', air:(r.querySelector('.fl-air')||{}).value||'', fc:(r.querySelector('.fl-fc')||{}).value||'', tc:(r.querySelector('.fl-tc')||{}).value||'', inf:(r.querySelector('.fl-inf')||{}).value||''});
+  });
+  var hotels = [];
+  document.querySelectorAll('#hotels-list .dyn-row').forEach(function(r) {
+    hotels.push({nm:(r.querySelector('.ht-nm')||{}).value||'', ct:(r.querySelector('.ht-ct')||{}).value||'', nt:(r.querySelector('.ht-nt')||{}).value||''});
+  });
+  var includes = [];
+  document.querySelectorAll('.inc-i').forEach(function(i) { if(i.value) includes.push(i.value); });
+  var excludes = [];
+  document.querySelectorAll('.excl-i').forEach(function(i) { if(i.value) excludes.push(i.value); });
+  var excursions = [];
+  document.querySelectorAll('#excopt-list .dyn-row').forEach(function(r) {
+    excursions.push({nm:(r.querySelector('.eo-nm')||{}).value||'', pr:(r.querySelector('.eo-pr')||{}).value||'', ds:(r.querySelector('.eo-ds')||{}).value||''});
+  });
+  var priceRows = document.querySelectorAll('#prices-list .dyn-row');
+  var prices = [];
+  for (var i = 0; i < priceRows.length; i++) {
+    var r = priceRows[i];
+    prices.push({ds:(r.querySelector('.pr-ds')||{}).value||'', vl:(r.querySelector('.pr-vl')||{}).value||0, old:(r.querySelector('.pr-old')||{}).value||0, vuelo:i===0});
+  }
+  var notes = [];
+  document.querySelectorAll('.nt-i').forEach(function(i) { if(i.value) notes.push(i.value); });
+  return {
+    code: document.getElementById('a-code').value || 'EV-001',
+    last: document.getElementById('a-last').value,
+    name: document.getElementById('a-name').value,
+    dest: document.getElementById('a-dest').value,
+    pax: document.getElementById('a-pax').value,
+    from: document.getElementById('a-from').value,
+    to: document.getElementById('a-to').value,
+    nights: document.getElementById('a-nights').value,
+    valid: document.getElementById('a-valid').value,
+    email: document.getElementById('a-email').value,
+    interno: document.getElementById('a-interno').value,
+    pay1title: document.getElementById('pay1-title').value,
+    pay1desc: document.getElementById('pay1-desc').value,
+    pay2title: document.getElementById('pay2-title').value,
+    pay2desc: document.getElementById('pay2-desc').value,
+    pay3desc: document.getElementById('pay3-desc').value,
+    paynote: document.getElementById('pay-note').value,
+    days: days, flights: flights, hotels: hotels,
+    includes: includes, excludes: excludes,
+    excursions: excursions, prices: prices, notes: notes
+  };
+}
+
+async function generateLink() {
+  var data = collectData();
+  generatedData = data;
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var finalUrl = BASE_URL + '/index.html?d=' + encoded;
+  document.getElementById('link-display').textContent = 'Generando link...';
+  document.getElementById('link-result').style.display = 'block';
+  try {
+    var res = await fetch(MAKE_WEBHOOK, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({url: finalUrl})
+    });
+    var short = await res.text();
+    document.getElementById('link-display').textContent = short.trim() || finalUrl;
+  } catch(e) {
+    document.getElementById('link-display').textContent = finalUrl;
+  }
+  document.getElementById('link-result').scrollIntoView({behavior:'smooth'});
+}
+
+function copyLink() {
+  var txt = document.getElementById('link-display').textContent;
+  navigator.clipboard.writeText(txt).then(function() {
+    var btn = document.querySelector('.btn-copy');
+    btn.innerHTML = '✓ Copiado';
+    setTimeout(function() { btn.innerHTML = '<i class="ti ti-copy"></i> Copiar'; }, 2000);
+  });
+}
+
+function previewQuote() {
+  if (!generatedData) return;
+  hide('page-admin');
+  renderQuote(generatedData);
+  show('page-quote');
+}
+
+window.onload = function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.has('demo')) { hide('page-login'); renderQuote(DEMO); }
+};
+</script>
+</body>
+</html>
